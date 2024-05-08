@@ -12,8 +12,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       HOST: root@45.89.188.208
-      DEPLOY_DIRECTORY: /root/apps/rdv-monolith
-      CONFIG_PATH: /root/apps/rdv-monolith/monolith/config/prod.yaml
+      DEPLOY_DIRECTORY: /root/apps/rdv-api
+      CONFIG_PATH: /root/apps/rdv-api/config/prod.yaml
 
     steps:
       - name: Checkout repository
@@ -34,10 +34,7 @@ jobs:
       - name: Build app
         run: |
           go mod download
-          go build -o rdv-monolith ./cmd/main
-      - name: Build migrator
-        run: |
-          go build -o migrator ./cmd/migrator
+          go build -o rdv-api ./cmd/main
       - name: Deploy to VM
         run: |
           sudo apt-get install -y ssh rsync
@@ -45,23 +42,19 @@ jobs:
           chmod 600 deploy_key.pem
           ssh -i deploy_key.pem -o StrictHostKeyChecking=no ${{ env.HOST }} "mkdir -p ${{ env.DEPLOY_DIRECTORY }}"
           rsync -avz -e 'ssh -i deploy_key.pem -o StrictHostKeyChecking=no' --exclude='.git' ./ ${{ env.HOST }}:${{ env.DEPLOY_DIRECTORY }}
-          rsync -avz -e 'ssh -i deploy_key.pem -o StrictHostKeyChecking=no' ./migrator ${{ env.HOST }}:${{ env.DEPLOY_DIRECTORY }}/migrator
         env:
           DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
       - name: Remove old systemd service file
         run: |
-          ssh -i deploy_key.pem -o StrictHostKeyChecking=no ${{ env.HOST }} "rm -f /etc/systemd/system/grpc-auth.service"
+          ssh -i deploy_key.pem -o StrictHostKeyChecking=no ${{ env.HOST }} "rm -f /etc/systemd/system/rdv-api.service"
       - name: List workspace contents
         run: |
           echo "Listing deployment folder contents:"
           ls -la ${{ github.workspace }}/deployment
       - name: Copy systemd service file
         run: |
-          scp -i deploy_key.pem -o StrictHostKeyChecking=no ${{ github.workspace }}/deployment/grpc-auth.service ${{ env.HOST }}:/tmp/grpc-auth.service
-          ssh -i deploy_key.pem -o StrictHostKeyChecking=no ${{ env.HOST }} "mv /tmp/grpc-auth.service /etc/systemd/system/grpc-auth.service"
-      - name: Run migrations
-        run: |
-          ssh -i deploy_key.pem -o StrictHostKeyChecking=no ${{ env.HOST }} "${{ env.DEPLOY_DIRECTORY }}/migrator --storage-path=${{ env.DEPLOY_DIRECTORY }}/sso.db --migrations-path=${{ env.DEPLOY_DIRECTORY }}/migrations"
+          scp -i deploy_key.pem -o StrictHostKeyChecking=no ${{ github.workspace }}/deployment/rdv-api.service ${{ env.HOST }}:/tmp/rdv-api.service
+          ssh -i deploy_key.pem -o StrictHostKeyChecking=no ${{ env.HOST }} "mv /tmp/rdv-api.service /etc/systemd/system/rdv-api.service"
       - name: Start application
         run: |
-          ssh -i deploy_key.pem -o StrictHostKeyChecking=no ${{ env.HOST }} "systemctl daemon-reload && systemctl restart grpc-auth.service"
+          ssh -i deploy_key.pem -o StrictHostKeyChecking=no ${{ env.HOST }} "systemctl daemon-reload && systemctl restart rdv-api.service"
