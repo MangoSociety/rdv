@@ -45,6 +45,9 @@ jobs:
         env:
           DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
       - name: Deploy with Docker Compose
+        with:
+          username: root
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
         # uses: appleboy/ssh-action@master
         run: |
             cd /root/apps/rdv-api
