@@ -31,16 +31,6 @@ jobs:
         uses: actions/setup-go@v2
         with:
           go-version: 1.22.0
-      - name: Deploy with Docker Compose
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ env.HOST }}
-          # username: ${{ secrets.SERVER_USERNAME }}
-          key: ${{ secrets.DEPLOY_SSH_KEY }}
-          script: |
-            cd /root/apps/rdv-api
-            docker-compose down
-            docker-compose up -d
       - name: Build app
         run: |
           go mod download
@@ -54,6 +44,15 @@ jobs:
           rsync -avz -e 'ssh -i deploy_key.pem -o StrictHostKeyChecking=no' --exclude='.git' ./ ${{ env.HOST }}:${{ env.DEPLOY_DIRECTORY }}
         env:
           DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+      - name: Deploy with Docker Compose
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ env.HOST }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          script: |
+            cd /root/apps/rdv-api
+            docker-compose down
+            docker-compose up -d
       - name: Remove old systemd service file
         run: |
           ssh -i deploy_key.pem -o StrictHostKeyChecking=no ${{ env.HOST }} "rm -f /etc/systemd/system/rdv-api.service"
