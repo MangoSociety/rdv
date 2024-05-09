@@ -24,16 +24,18 @@ func main() {
 		defer db.Close()
 
 		// Test the connection to the database
+		var user User
 		if err := db.Ping(); err != nil {
-			log.Fatal(err)
+			user = User{
+				Name:  "John failed Doe",
+				Email: "john@example.com",
+			}
 		} else {
-			log.Println("Successfully Connected")
-		}
-
-		// Создание объекта пользователя
-		user := User{
-			Name:  "John Doe",
-			Email: "john@example.com",
+			user = User{
+				Name:  "John success Doe",
+				Email: "john@example.com",
+			}
+			//log.Println("Successfully Connected")
 		}
 
 		// Установка заголовка Content-Type
