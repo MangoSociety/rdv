@@ -44,19 +44,6 @@ jobs:
           rsync -avz -e 'ssh -i deploy_key.pem -o StrictHostKeyChecking=no' --exclude='.git' ./ ${{ env.HOST }}:${{ env.DEPLOY_DIRECTORY }}
         env:
           DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
-      - name: Install Docker
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ env.HOST }}
-          username: root
-          key: ${{ secrets.DEPLOY_SSH_KEY }}
-          script: |
-            apt-get update
-            apt-get install -y apt-transport-https ca-certificates curl gnupg lsb-release
-            curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
-            echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
-            apt-get update
-            apt-get install -y docker-ce docker-ce-cli containerd.io
       - name: Deploy with Docker Compose
         uses: appleboy/ssh-action@master
         with:
