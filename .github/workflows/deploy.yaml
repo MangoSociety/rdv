@@ -50,6 +50,7 @@ jobs:
           key: ${{ secrets.DEPLOY_SSH_KEY }}
         # uses: appleboy/ssh-action@master
         run: |
+            chown -R username:username /root/apps/rdv-api
             cd /root/apps/rdv-api
             docker-compose down
             docker-compose up -d
