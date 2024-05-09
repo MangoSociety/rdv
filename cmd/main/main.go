@@ -38,6 +38,10 @@ func main() {
 			//log.Println("Successfully Connected")
 		}
 
+		user = User{
+			Name:  "John netral Doe",
+			Email: "john@example.com",
+		}
 		// Установка заголовка Content-Type
 		w.Header().Set("Content-Type", "application/json")
 
