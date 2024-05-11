@@ -36,14 +36,8 @@ func main() {
 				Name:  "John success Doe",
 				Email: "john@example.com",
 			}
-			//log.Println("Successfully Connected")
 		}
 
-		//user = User{
-		//	Name:  "John netral Doe",
-		//	Email: "john@example.com",
-		//}
-		// Установка заголовка Content-Type
 		w.Header().Set("Content-Type", "application/json")
 
 		// Кодирование объекта пользователя в JSON и запись ответа

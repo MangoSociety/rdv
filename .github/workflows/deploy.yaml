@@ -44,6 +44,12 @@ jobs:
           rsync -avz -e 'ssh -i deploy_key.pem -o StrictHostKeyChecking=no' --exclude='.git' ./ ${{ env.HOST }}:${{ env.DEPLOY_DIRECTORY }}
         env:
           DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+      - name: Set up Goose
+        run: |
+          go install github.com/pressly/goose/v3/cmd/goose@latest
+      - name: Run goose migrations
+        run: |
+            goose -dir ${{ env.DEPLOY_DIRECTORY }}/migrations up
       - name: Remove old systemd service file
         run: |
           ssh -i deploy_key.pem -o StrictHostKeyChecking=no ${{ env.HOST }} "rm -f /etc/systemd/system/rdv-api.service"
