@@ -27,7 +27,6 @@ func Connect(settings Settings) (err error) {
 	}
 	log.Printf("Database connection was created: %s \n", sqlInfo)
 
-	// make migrations
 	if settings.Reload {
 		log.Printf("Start reloading database \n")
 		err := goose.DownTo(DB, ".", 0)
@@ -35,6 +34,7 @@ func Connect(settings Settings) (err error) {
 			return err
 		}
 	}
+	// TODO: Settings migrations
 	log.Printf("Start migrating database \n")
 	err = goose.Up(DB, "migrations")
 	if err != nil {

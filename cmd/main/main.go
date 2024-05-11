@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
-	psql "github.com/mangosociety/rdv_api/monolith/pkg/storage/psql"
 	"log"
 	"net/http"
 )
@@ -18,19 +17,19 @@ type User struct {
 func main() {
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 
-		// DATABASE
-		dbSettings := psql.Settings{
-			User:   "krakra",
-			Pass:   "krapassword",
-			Host:   "localhost",
-			Port:   "5432",
-			Name:   "kra_db",
-			Reload: false,
-		}
-		err := psql.Connect(dbSettings)
-		if err != nil {
-			log.Fatal(err)
-		}
+		//// DATABASE
+		//dbSettings := psql.Settings{
+		//	User:   "krakra",
+		//	Pass:   "krapassword",
+		//	Host:   "localhost",
+		//	Port:   "5432",
+		//	Name:   "kra_db",
+		//	Reload: false,
+		//}
+		//err := psql.Connect(dbSettings)
+		//if err != nil {
+		//	log.Fatal(err)
+		//}
 
 		db, err := sqlx.Connect("postgres", "user=t_user dbname=t_db sslmode=disable password=456654 host=localhost")
 		if err != nil {
