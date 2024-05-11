@@ -20,11 +20,11 @@ func main() {
 
 		// DATABASE
 		dbSettings := psql.Settings{
-			User:   "t_user",
-			Pass:   "456654",
+			User:   "krakra",
+			Pass:   "krapassword",
 			Host:   "localhost",
 			Port:   "5432",
-			Name:   "t_db",
+			Name:   "kra_db",
 			Reload: false,
 		}
 		err := psql.Connect(dbSettings)
