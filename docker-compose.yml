@@ -10,6 +10,6 @@ services:
     volumes:
       - ~/apps/postgres:/var/lib/postgresql/data
     environment:
-      - POSTGRES_PASSWORD=456654
-      - POSTGRES_USER=t_user
-      - POSTGRES_DB=t_db
+      - POSTGRES_PASSWORD=krapassword
+      - POSTGRES_USER=krakra
+      - POSTGRES_DB=kra_db
