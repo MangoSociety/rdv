@@ -50,7 +50,7 @@ jobs:
       - name: Run goose migrations
         run: |
             export PGDATABASE=t_db
-            export DATABASE_URL="postgres://t_user:456654@localhost:t_db/t_db?sslmode=disable"
+            export DATABASE_URL="postgres://t_user:456654@localhost:5432/t_db?sslmode=disable"
             export GOOSE_MIGRATIN_DIR=migrations
             export GOOSE_DRIVER=postgres
             export GOOSE_DBSTRING="postgres://t_user:456654@127.0.0.1:5432/t_db?sslmode=disable"
